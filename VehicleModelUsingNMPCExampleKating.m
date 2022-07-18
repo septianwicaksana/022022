@@ -1,15 +1,17 @@
 %%
 
-% clc;clear;close all;
-Xdot = load('Xdot.mat').ans'; 
-Xdot = Xdot(1:2658);
-Xdotdot = diff(Xdot);
-Ydot = load('Ydot.mat').ans';
-Ydot = Ydot(1:2658);
-Ydotdot = diff(Ydot);
-Zdot = load('Zdot.mat').ans';
-Zdot = Zdot(1:2658);
-Zdotdot = diff(Zdot);
+clc;clear;close all;
+% Xdot = load('Xdot.mat').ans'; 
+% Xdot = Xdot(1:2658);
+% Xdotdot = diff(Xdot);
+% Ydot = load('Ydot.mat').ans';
+% Ydot = Ydot(1:2658);
+% Ydotdot = diff(Ydot);
+% Zdot = load('Zdot.mat').ans';
+% Zdot = Zdot(1:2658);
+% Zdotdot = diff(Zdot);
+
+x = load('xScenarioOne.mat').x;
 
 
 nx = 6;
@@ -17,7 +19,7 @@ ny = 3;
 nu = 2;
 nlobj = nlmpc(nx,ny,nu);
 
-Ts = 1/264.8;
+Ts = 0.01;
 nlobj.Ts = Ts;
 nlobj.PredictionHorizon = 10;
 nlobj.ControlHorizon =2;
@@ -74,7 +76,7 @@ hbar = waitbar(0,'Simulation Progress');
 xHistory = x;
 
 for ct = 1:(10/Ts)
-    yref = [Xdot(ct) Ydot(ct) Zdot(ct)];
+    yref = [x(1,ct) x(2,ct) x(3,ct)];
     % Correct previous prediction using current measurement.
     xk = correct(EKF, y);
     % Compute optimal control moves.
@@ -110,7 +112,7 @@ xlabel('time')
 ylabel('m/s')
 title('Vx')
 hold on
-plot(0:Ts:Duration,Xdot(1:2649))
+plot(0:Ts:Duration,x(1,:))
 xlabel('time')
 ylabel('m/s^2')
 title('Vx')
@@ -122,7 +124,7 @@ xlabel('time')
 ylabel('m/s')
 title('Vy')
 hold on 
-plot(0:Ts:Duration,Ydot(1:2649))
+plot(0:Ts:Duration,x(2,:))
 xlabel('time')
 ylabel('m/s^2')
 title('Vx')
@@ -133,7 +135,7 @@ xlabel('time')
 ylabel('m/s')
 title('Vy')
 hold on 
-plot(0:Ts:Duration,Zdot(1:2649))
+plot(0:Ts:Duration,x(3,:))
 xlabel('time')
 ylabel('m/s^2')
 title('Vx')
